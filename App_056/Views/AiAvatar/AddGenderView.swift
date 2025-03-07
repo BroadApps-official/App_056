@@ -68,8 +68,6 @@ struct AddGenderView: View {
           guard let gender = selectedGender else { return }
           generationManager.isGenerating = true
                    uploadAvatar(gender: gender)
-                   tabManager.selectedTab = .aiAvatar
-          dismiss()
         }) {
           HStack {
             Text("Generate")
@@ -93,10 +91,7 @@ struct AddGenderView: View {
   }
   
   private func uploadAvatar(gender: String) {
-    print("📸 Загруженные фото: \(uploadedPhotos.count)")
-    print("👤 User ID: \(avatarAPI.userId)")
-    print("🚻 Gender: \(gender)")
-    
+    generationManager.isGenerating = true
     AvatarAPI.uploadAvatar(
       userId: avatarAPI.userId,
       gender: gender,
@@ -106,13 +101,10 @@ struct AddGenderView: View {
       DispatchQueue.main.async {
         switch result {
         case .success(let response):
-          print("✅ Аватар успешно загружен: \(response)")
           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            dismiss()
             tabManager.selectedTab = .aiAvatar
           }
         case .failure(let error):
-          print("❌ Ошибка загрузки аватара: \(error.localizedDescription)")
           generationManager.isGenerating = false
         }
       }

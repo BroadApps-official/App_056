@@ -162,7 +162,7 @@ struct AvatarItemView: View {
 }
 
 class AvatarGenerationManager: ObservableObject {
-    @Published var isGenerating: Bool = true
+    @Published var isGenerating: Bool = false
 }
 struct PlaceholderAvatarView: View {
     var body: some View {
