@@ -1,0 +1,24 @@
+{
+  "originHash" : "8d9e083ed9e2e1c5c5dba7605d32cfcb7fa9dab6867b19ea80343673f593e6f9",
+  "pins" : [
+    {
+      "identity" : "apphudsdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apphud/ApphudSDK",
+      "state" : {
+        "revision" : "b020ddde7434abbc7997495d092a75beaba9130d",
+        "version" : "3.5.9"
+      }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios",
+      "state" : {
+        "revision" : "047aa81b77adcbf583a966dfef620d17650cc656",
+        "version" : "4.5.1"
+      }
+    }
+  ],
+  "version" : 3
+}
