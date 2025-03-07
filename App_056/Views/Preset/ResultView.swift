@@ -15,7 +15,7 @@ struct ResultView: View {
             .font(.system(size: 18, weight: .medium))
             .foregroundColor(.white)
             .padding()
-            .background(Circle().fill(Color.black.opacity(0.3)))
+            .background(Circle().fill(Color.gray.opacity(0.3)))
         }
         Spacer()
 
@@ -31,10 +31,29 @@ struct ResultView: View {
 
       Spacer()
 
-      if let imageUrl = imageUrl, !imageUrl.isEmpty {
-        CachedAsyncImage(url: imageUrl)
-          .frame(width: UIScreen.main.bounds.width * 0.85)
-          .cornerRadius(16)
+      if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
+        AsyncImage(url: url) { phase in
+                switch phase {
+                case .empty:
+                  ProgressView()
+                    .frame(width: UIScreen.main.bounds.width * 0.85, height: UIScreen.main.bounds.height * 0.85)
+                case .success(let image):
+                  image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: UIScreen.main.bounds.width * 0.85)
+                    .cornerRadius(16)
+                case .failure:
+                  Image("avatar-placeholder")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: UIScreen.main.bounds.width * 0.85)
+                    .cornerRadius(16)
+                    .overlay(Color.black.opacity(0.3))
+                @unknown default:
+                  EmptyView()
+                }
+              }
       } else {
         Image("avatar-placeholder")
           .resizable()
@@ -63,7 +82,7 @@ struct ResultView: View {
         Image(icon)
           .foregroundColor(.red)
           .font(.title2)
-        frame(width: 60, height: 60)
+          .frame(width: 60, height: 60)
       }
     }
   }
@@ -82,15 +101,9 @@ struct ResultView: View {
   private func reloadImage() {
     guard let imageUrl = imageUrl else { return }
     if let project = projectManager.presets.first(where: { $0.imageName == imageUrl }) {
-      tabManager.selectedTab = .create
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-        tabManager.selectedTab = .project
-      }
+      tabManager.selectedTab = .preset
     } else if let project = projectManager.artworks.first(where: { $0.imageName == imageUrl }) {
       tabManager.selectedTab = .create
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-        tabManager.selectedTab = .project
-      }
     }
     dismiss()
   }

@@ -60,6 +60,13 @@ struct AvatarStatusResponse: Codable {
   let createdAt: String
 }
 
+struct AddAvatarResponse: Codable {
+  let error: Bool
+  let message: String?
+  let data: AvatarData?
+  let avatars: [AvatarData]?
+}
+
 struct AvatarResponse: Codable {
   let error: Bool
   let message: String?
@@ -77,7 +84,7 @@ struct AvatarData: Codable {
 struct Avatar: Codable, Identifiable {
   let id: Int
   let title: String?
-  let preview: String?
+  var preview: String?
   let gender: String
   let isActive: Bool
 }

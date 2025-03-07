@@ -34,6 +34,19 @@ class AvatarAPI: ObservableObject {
     }
   }
 
+  func addAvatar(_ avatar: Avatar) {
+         avatars.append(avatar)
+     }
+
+     // Пример метода для обновления placeholder‑аватара по id
+     func updateAvatar(withId id: String, newPreview: String?) {
+       if let index = avatars.firstIndex(where: { $0.id == Int(id) }) {
+             avatars[index].preview = newPreview
+             // Если требуется, вызовите objectWillChange.send() или обновите массив, чтобы UI отреагировал
+             objectWillChange.send()
+         }
+     }
+
   func loginUser(completion: @escaping (Bool) -> Void) {
     guard let url = URL(string: AvatarAPI.loginURL) else { return }
 
@@ -64,7 +77,7 @@ class AvatarAPI: ObservableObject {
     }.resume()
   }
 
-  func addAvatarGeneration(completion: @escaping (Result<AvatarResponse, Error>) -> Void) {
+  func addAvatarGeneration(completion: @escaping (Result<AddAvatarResponse, Error>) -> Void) {
 
     guard var urlComponents = URLComponents(string: AvatarAPI.addAvatarGenURL) else {
       completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -99,7 +112,9 @@ class AvatarAPI: ObservableObject {
         }
 
         do {
-          let decodedResponse = try JSONDecoder().decode(AvatarResponse.self, from: data)
+          let jsonString = String(data: data, encoding: .utf8) ?? "❌ Ошибка декодирования JSON"
+                       print("📥 Ответ сервера: \(jsonString)")
+          let decodedResponse = try JSONDecoder().decode(AddAvatarResponse.self, from: data)
           completion(.success(decodedResponse))
         } catch {
           completion(.failure(error))
@@ -310,10 +325,6 @@ class AvatarAPI: ObservableObject {
         }
 
         do {
-          if let jsonString = String(data: data, encoding: .utf8) {
-                  print("📦 Полученный JSON:", jsonString)
-              }
-
           let response = try JSONDecoder().decode(PresetsResponse.self, from: data)
           if response.error {
             print("❌ Ошибка сервера при загрузке пресетов")
@@ -370,34 +381,48 @@ class AvatarAPI: ObservableObject {
   }
 
   private func savePresetsToCache(_ presets: [PresetCategory]) {
-    let context = CoreDataManager.shared.context
-    let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CachedPreset.fetchRequest()
-    let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-    do {
-      try context.execute(deleteRequest)
-      try context.save()
-    } catch {
-      print("❌ Ошибка очистки кэша пресетов: \(error.localizedDescription)")
-    }
+      let context = CoreDataManager.shared.context
 
-    presets.forEach { preset in
-      let cachedPreset = CachedPreset(context: context)
-      cachedPreset.id = Int64(preset.id)
-      cachedPreset.title = preset.title
-      cachedPreset.preview = preset.preview
-
-      if let imageUrl = preset.preview, let url = URL(string: imageUrl),
-         let imageData = try? Data(contentsOf: url) {
-        cachedPreset.imageData = imageData
+      let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CachedPreset.fetchRequest()
+      let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+      do {
+          try context.execute(deleteRequest)
+          try context.save()
+      } catch {
+          print("❌ Ошибка очистки кэша пресетов: \(error.localizedDescription)")
       }
-    }
 
-    do {
-      try context.save()
-      print("✅ Пресеты успешно сохранены в кэш")
-    } catch {
-      print("❌ Ошибка сохранения пресетов: \(error.localizedDescription)")
-    }
+      let group = DispatchGroup()
+
+      presets.forEach { preset in
+          let cachedPreset = CachedPreset(context: context)
+          cachedPreset.id = Int64(preset.id)
+          cachedPreset.title = preset.title
+          cachedPreset.preview = preset.preview
+
+          if let imageUrl = preset.preview,
+             let url = URL(string: imageUrl) {
+
+              group.enter()
+
+              URLSession.shared.dataTask(with: url) { data, response, error in
+                  if let data = data, error == nil {
+                      cachedPreset.imageData = data
+                  }
+
+                  group.leave()
+              }.resume()
+          }
+      }
+
+      group.notify(queue: .main) {
+          do {
+              try context.save()
+              print("✅ Пресеты успешно сохранены в кэш (асинхронно)")
+          } catch {
+              print("❌ Ошибка сохранения пресетов: \(error.localizedDescription)")
+          }
+      }
   }
 
   private func loadPresetsFromCache() {

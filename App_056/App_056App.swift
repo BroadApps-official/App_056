@@ -13,6 +13,7 @@ struct MyApp: App {
     @StateObject var networkMonitor = NetworkMonitor.shared
     @StateObject var tabManager = TabManager()
     @StateObject var projectManager = ProjectManager.shared
+  @StateObject private var generationManager = AvatarGenerationManager()
 
   init() {
      Apphud.start(apiKey: "app_GoQ3fPKcTQjSehk1DMKQAR3Cn1eUWk")
@@ -26,6 +27,7 @@ struct MyApp: App {
                 .environmentObject(tabManager)
                 .environmentObject(projectManager)
                 .environmentObject(networkMonitor)
+                .environmentObject(generationManager)
                 .onAppear {
                     appLaunchCount += 1
                     checkReviewConditions()

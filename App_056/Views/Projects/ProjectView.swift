@@ -67,10 +67,17 @@ struct ProjectView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                   ForEach(Array(filteredProjects.enumerated()), id: \.element.id) { index, project in
                     ProjectItemView(
-                      project: project,
-                      isEditing: isEditing
+                        project: project,
+                        isEditing: isEditing
                     ) {
-                      selectedImageUrl = ImageUrl(url: project.imageName)
+                        if isEditing {
+                            // Если сейчас режим редактирования –
+                            // переключаем флажок isSelected у данного проекта
+                            toggleProjectSelection(project)
+                        } else {
+                            // Если НЕ режим редактирования – открываем детальный экран
+                            selectedImageUrl = ImageUrl(url: project.imageName)
+                        }
                     }
                   }
                 }
@@ -87,13 +94,14 @@ struct ProjectView: View {
                   Text("Delete")
                     .font(.system(size: 18, weight: .bold))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 56)
+                    .frame(height: 64)
                     .background(filteredProjects.contains(where: { $0.isSelected }) ? Color.red : Color.gray)
                     .foregroundColor(.white)
                     .clipShape(Capsule())
                 }
                 .disabled(!filteredProjects.contains(where: { $0.isSelected }))
                 .padding(.horizontal, 20)
+                .padding(.bottom, 50)
               }
             }
           }
@@ -120,6 +128,18 @@ struct ProjectView: View {
     }
   }
 
+private func toggleProjectSelection(_ project: Project) {
+    if selectedTab == "Preset" {
+        if let index = projectManager.presets.firstIndex(where: { $0.id == project.id }) {
+            projectManager.presets[index].isSelected.toggle()
+        }
+    } else {
+        if let index = projectManager.artworks.firstIndex(where: { $0.id == project.id }) {
+            projectManager.artworks[index].isSelected.toggle()
+        }
+    }
+}
+
   private func deleteSelectedProjects() {
     let projectsToDelete = filteredProjects.filter { $0.isSelected }
     for project in projectsToDelete {
@@ -129,53 +149,103 @@ struct ProjectView: View {
   }
 }
 
+import SwiftUI
 
 struct ProjectItemView: View {
-  var project: Project
-  var isEditing: Bool
-  var onSelect: () -> Void
+    var project: Project
+    var isEditing: Bool
+    var onSelect: () -> Void
 
-  var body: some View {
-    VStack(alignment: .leading, spacing: 6) {
-      ZStack {
-        if project.isLoading {
-          Image("avatar-placeholder")
-            .resizable()
-            .scaledToFill()
-            .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
-            .cornerRadius(20)
-            .clipped()
-            .overlay(Color.black.opacity(0.4))
-            .overlay(
-              ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-            )
-        } else {
-          CachedProjectsAsyncImage(url: project.imageName)
-        }
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ZStack {
+                if project.isLoading {
+                    // Показываем placeholder и прогресс, пока грузим
+                    Image("avatar-placeholder")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
+                        .cornerRadius(20)
+                        .clipped()
+                        .overlay(Color.black.opacity(0.4))
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        )
+                } else {
+                    // Загружаем реальную картинку через AsyncImage
+                  if let url = URL(string: project.imageName) {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
 
-        if isEditing {
-          VStack {
-            Spacer()
-            HStack {
-              Spacer()
-              Button(action: { onSelect() }) {
-                Image(systemName: project.isSelected ? "checkmark.circle.fill" : "circle")
-                  .foregroundColor(.red)
-                  .padding(8)
-              }
+                                ProgressView()
+                                    .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
+                            case .success(let image):
+                                // Успешная загрузка
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
+                                    .cornerRadius(20)
+                                    .clipped()
+                            case .failure(_):
+                                // Ошибка загрузки: показываем fallback
+                                Image("avatar-placeholder")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
+                                    .cornerRadius(20)
+                                    .clipped()
+                                    .overlay(Color.black.opacity(0.3))
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        // Добавляем оранжевую обводку, если item выбран
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(project.isSelected ? ColorTokens.orange : Color.clear, lineWidth: 2)
+                        )
+                    } else {
+                        // Если URL некорректный
+                        Image("avatar-placeholder")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: (UIScreen.main.bounds.width - 48) / 2, height: 213)
+                            .cornerRadius(20)
+                            .clipped()
+                            .overlay(Color.black.opacity(0.3))
+                    }
+                }
+
+                // Кнопка галочки при редактировании
+                if isEditing {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Button(action: { onSelect() }) {
+                                Image(systemName: project.isSelected ? "checkmark.circle.fill" : "circle")
+                                    .foregroundColor(.red)
+                                    .padding(8)
+                            }
+                        }
+                    }
+                }
             }
-          }
+            Text(project.date)
+                .font(.system(size: 14))
+                .foregroundColor(.white.opacity(0.7))
         }
-      }
-      Text(project.date)
-        .font(.system(size: 14))
-        .foregroundColor(.white.opacity(0.7))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !isEditing {
+                onSelect()
+            }
+        }
     }
-    .onTapGesture { onSelect() }
-  }
 }
-
 
 struct EmptyStateView: View {
   @Binding var selectedTab: String

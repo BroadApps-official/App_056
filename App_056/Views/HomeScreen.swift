@@ -32,7 +32,6 @@ struct HomeScreen: View {
 struct SplashScreen: View {
   var body: some View {
     ZStack {
-      
       RoundedRectangle(cornerRadius: 20)
       Image("splash")
         .resizable()

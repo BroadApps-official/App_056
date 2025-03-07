@@ -77,10 +77,13 @@ class ProjectManager: ObservableObject {
           }
         }
         print("✅ Проект обновлен: \(newImageUrl)")
-      }
+      } else {
+        print("Не найден проект в CoreData по id = \(projectId)")
+    }
     } catch {
       print("❌ Ошибка обновления проекта: \(error)")
     }
+
   }
 
   func deleteProject(_ project: Project) {

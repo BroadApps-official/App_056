@@ -72,7 +72,7 @@ struct PresetDetailView: View {
                 .frame(width: 5, height: 12)
                 .foregroundColor(.white)
                 .padding()
-                .background(Circle().fill(Color.black.opacity(0.8)))
+                .background(Circle().fill(Color.gray.opacity(0.8)))
             }
             .padding(.leading, 16)
           }

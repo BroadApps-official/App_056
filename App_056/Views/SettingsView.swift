@@ -17,8 +17,8 @@ struct SettingsView: View {
         Button(action: { dismiss() }) {
           Image(systemName: "chevron.left")
             .foregroundColor(.white)
-            .font(.title2)
-            .padding(10)
+            .padding()
+            .background(Circle().fill(Color.gray.opacity(0.3)))
         }
         
         Spacer()
@@ -127,19 +127,20 @@ struct SettingsView: View {
   }
   
   private func notificationToggle() -> AnyView {
-    AnyView(
-      Toggle("", isOn: $notificationManager.isNotificationsEnabled)
-        .labelsHidden()
-        .onChange(of: notificationManager.isNotificationsEnabled) { newValue in
-          if newValue {
-            notificationManager.requestNotificationPermission()
-          } else {
-            notificationManager.disableNotifications()
-          }
-        }
-    )
+      AnyView(
+          Toggle("", isOn: $notificationManager.isNotificationsEnabled)
+              .labelsHidden()
+              .onChange(of: notificationManager.isNotificationsEnabled) { newValue in
+                  if newValue {
+                      notificationManager.requestNotificationPermission()
+                  } else {
+                      notificationManager.disableNotifications()
+                  }
+              }
+            .tint(ColorTokens.orange)
+      )
   }
-  
+
   private func showRateAlert() {
     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
       SKStoreReviewController.requestReview(in: scene)

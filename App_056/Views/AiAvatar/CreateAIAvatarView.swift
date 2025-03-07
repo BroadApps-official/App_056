@@ -10,72 +10,65 @@ struct CreateAIAvatarView: View {
   @State private var navigateToGallery = false
 
   var body: some View {
-    NavigationStack {
-      ZStack {
-        Color.black.ignoresSafeArea()
+    ZStack {
+      Color.black.ignoresSafeArea()
 
-        VStack(alignment: .leading, spacing: 16) {
-          HStack {
-            Button(action: {
-              dismiss()
-            }) {
-              Image(systemName: "chevron.left")
-                .font(.system(size: 20))
-                .foregroundColor(.white)
-            }
-            Spacer()
-            Text("Create AI Avatar")
-              .font(.system(size: 20, weight: .semibold))
-              .foregroundColor(.white)
-            Spacer()
-          }
-          .padding(.horizontal, 16)
-
-          Text("Pick from 10 to 50 of your best photos")
-            .font(.system(size: 18, weight: .bold))
-            .foregroundColor(.white)
-            .padding(.horizontal, 16)
-
-          Text("This is a one-time process")
-            .font(.system(size: 14))
-            .foregroundColor(.gray)
-            .padding(.horizontal, 16)
-
-          ForEach($instructions) { $instruction in
-            InstructionRow(instruction: $instruction)
-          }
-          .padding(.horizontal, 16)
-
-          Spacer()
-
-          HStack {
-            Spacer()
-            Image("inst4")
-            Spacer()
-          }
-
-          Spacer()
-
+      VStack(alignment: .leading, spacing: 16) {
+        HStack {
           Button(action: {
-            navigateToGallery = true
+            dismiss()
           }) {
-            Text("Next")
-              .font(.system(size: 18, weight: .bold))
-              .frame(maxWidth: .infinity)
-              .frame(height: 65)
-              .background(GradientStyles.gradient2)
+            Image(systemName: "chevron.left")
               .foregroundColor(.white)
-              .clipShape(Capsule())
+              .padding()
+              .background(Circle().fill(Color.gray.opacity(0.3)))
           }
+          Spacer()
+          Text("Create AI Avatar")
+            .font(.system(size: 20, weight: .semibold))
+            .foregroundColor(.white)
+          Spacer()
+        }
+        .padding(.horizontal, 16)
+
+        Text("Pick from 10 to 50 of your best photos")
+          .font(.system(size: 18, weight: .bold))
+          .foregroundColor(.white)
           .padding(.horizontal, 16)
-          .padding(.bottom, 20)
+
+        Text("This is a one-time process")
+          .font(.system(size: 14))
+          .foregroundColor(.gray)
+          .padding(.horizontal, 16)
+
+        ForEach($instructions) { $instruction in
+          InstructionRow(instruction: $instruction)
+        }
+        .padding(.horizontal, 16)
+
+        Spacer()
+
+        HStack {
+          Spacer()
+          Image("inst4")
+          Spacer()
+        }
+
+        Spacer()
+
+        NavigationLink(destination: GalleryPickerView()) {
+            Text("Next")
+                .font(.system(size: 18, weight: .bold))
+                .frame(maxWidth: .infinity, maxHeight: 65)
+                .background(GradientStyles.gradient2)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
+                .padding(.horizontal, 16)
+                .padding(.bottom, 20)
         }
       }
-      .navigationDestination(isPresented: $navigateToGallery) {
-        GalleryPickerView()
-      }
-      .navigationBarBackButtonHidden()
     }
+      .navigationBarBackButtonHidden()
   }
 }
 
@@ -96,8 +89,3 @@ struct InstructionRow: View {
   }
 }
 
-#Preview {
-  NavigationStack {
-    CreateAIAvatarView()
-  }
-}

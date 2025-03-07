@@ -12,7 +12,7 @@ struct CategoryDetailView: View {
             .font(.system(size: 18, weight: .medium))
             .foregroundColor(.white)
             .padding()
-            .background(Circle().fill(Color.black.opacity(0.3)))
+            .background(Circle().fill(Color.gray.opacity(0.3)))
         }
         Spacer()
         Text(category.title)
