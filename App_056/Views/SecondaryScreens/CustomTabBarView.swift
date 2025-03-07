@@ -6,7 +6,7 @@ class TabManager: ObservableObject {
 
 struct CustomTabBarView: View {
   @StateObject private var tabManager = TabManager()
-
+  
   var body: some View {
     NavigationStack {
       VStack(spacing: 0) {
@@ -17,10 +17,10 @@ struct CustomTabBarView: View {
             .environmentObject(tabManager)
         case .project: ProjectView()
             .environmentObject(tabManager)
-        case .aiAvatar: AIAvatarView(gender: AvatarAPI.shared.gender, uploadedPhotos: [])
+        case .aiAvatar: AIAvatarView(gender: AvatarAPI.shared.gender, uploadedPhotos: [], onComplete: {})
             .environmentObject(tabManager)
         }
-
+        
         CustomTabBar()
           .frame(width: UIScreen.main.bounds.width * 1.1, height: 30)
           .safeAreaInset(edge: .bottom) {
@@ -35,7 +35,7 @@ struct CustomTabBarView: View {
 
 struct CustomTabBar: View {
   @EnvironmentObject var tabManager: TabManager
-
+  
   var body: some View {
     VStack(spacing: 0) {
       HStack {
@@ -63,7 +63,7 @@ struct CustomTabBar: View {
 
 enum Tab: CaseIterable {
   case create, preset, project, aiAvatar
-
+  
   var iconName: String {
     switch self {
     case .create: return "tab1-off"
@@ -72,7 +72,7 @@ enum Tab: CaseIterable {
     case .aiAvatar: return "tab4-off"
     }
   }
-
+  
   var iconNameFill: String {
     switch self {
     case .create: return "tab1-on"

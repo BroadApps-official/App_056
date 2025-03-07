@@ -32,14 +32,14 @@ struct HomeScreen: View {
 struct SplashScreen: View {
   var body: some View {
     ZStack {
-      RoundedRectangle(cornerRadius: 20)
+      Color.black
+        .ignoresSafeArea()
+
       Image("splash")
         .resizable()
         .frame(width: 100, height: 100)
         .cornerRadius(20)
     }
-    .background(.black)
-    .edgesIgnoringSafeArea(.all)
   }
 }
 
@@ -106,7 +106,6 @@ struct IntroScreen: View {
     .background(.black)
   }
 }
-
 
 struct MainAppView: View {
   var body: some View {

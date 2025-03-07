@@ -33,27 +33,27 @@ struct ResultView: View {
 
       if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
         AsyncImage(url: url) { phase in
-                switch phase {
-                case .empty:
-                  ProgressView()
-                    .frame(width: UIScreen.main.bounds.width * 0.85, height: UIScreen.main.bounds.height * 0.85)
-                case .success(let image):
-                  image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width * 0.85)
-                    .cornerRadius(16)
-                case .failure:
-                  Image("avatar-placeholder")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width * 0.85)
-                    .cornerRadius(16)
-                    .overlay(Color.black.opacity(0.3))
-                @unknown default:
-                  EmptyView()
-                }
-              }
+          switch phase {
+          case .empty:
+            ProgressView()
+              .frame(width: UIScreen.main.bounds.width * 0.85, height: UIScreen.main.bounds.height * 0.85)
+          case .success(let image):
+            image
+              .resizable()
+              .scaledToFit()
+              .frame(width: UIScreen.main.bounds.width * 0.85)
+              .cornerRadius(16)
+          case .failure:
+            Image("avatar-placeholder")
+              .resizable()
+              .scaledToFit()
+              .frame(width: UIScreen.main.bounds.width * 0.85)
+              .cornerRadius(16)
+              .overlay(Color.black.opacity(0.3))
+          @unknown default:
+            EmptyView()
+          }
+        }
       } else {
         Image("avatar-placeholder")
           .resizable()
@@ -94,7 +94,6 @@ struct ResultView: View {
     } else if let project = projectManager.artworks.first(where: { $0.imageName == imageUrl }) {
       projectManager.deleteProject(project)
     }
-    print("🗑️ Изображение удалено")
     dismiss()
   }
 
@@ -113,7 +112,6 @@ struct ResultView: View {
     downloadImage(from: url) { image in
       guard let image = image else { return }
       UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-      print("✅ Изображение сохранено в галерею")
     }
   }
 

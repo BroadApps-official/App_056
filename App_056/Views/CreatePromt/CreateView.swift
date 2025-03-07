@@ -26,24 +26,24 @@ struct CreateView: View {
           .foregroundColor(.white)
           .frame(maxWidth: .infinity, alignment: .center)
           .padding(.top, 16)
-
+        
         VStack(alignment: .leading, spacing: 12) {
           Text("AI Art")
             .font(.system(size: 18))
             .foregroundColor(.white)
             .padding(.horizontal, 16)
-
+          
           HStack {
             Text("AI Avatar")
               .font(.system(size: 16))
               .foregroundColor(.white)
-
+            
             Image(systemName: "info.circle")
               .foregroundColor(.gray)
           }
           .frame(maxWidth: .infinity, alignment: .leading)
           .padding(.horizontal, 16)
-
+          
           AvatarSelectionRow(
             avatars: avatars,
             selectedAvatarId: $selectedAvatarId,
@@ -53,7 +53,7 @@ struct CreateView: View {
           .environmentObject(tabManager)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-
+        
         VStack(alignment: .leading, spacing: 12) {
           HStack {
             Text("Enter Prompt")
@@ -63,7 +63,7 @@ struct CreateView: View {
               .foregroundColor(.gray)
           }
           .padding(.horizontal, 26)
-
+          
           ZStack(alignment: .topLeading) {
             if promptText.isEmpty && !isEditing {
               Text("What do you want to generate?")
@@ -71,7 +71,7 @@ struct CreateView: View {
                 .padding(.horizontal, 30)
                 .padding(.vertical, 12)
             }
-
+            
             TextEditor(text: $promptText)
               .scrollContentBackground(.hidden)
               .background(Color.gray.opacity(0.2))
@@ -83,9 +83,9 @@ struct CreateView: View {
               .onChange(of: promptText) { newValue in isEditing = !newValue.isEmpty }
           }
         }
-
+        
         Spacer()
-
+        
         Button(action: {
           hideKeyboard()
           navigateToGenerating = true
@@ -123,7 +123,7 @@ struct CreateView: View {
             )
           }
         }
-
+        
       }
       .background(Color.black.edgesIgnoringSafeArea(.all))
       .onTapGesture { hideKeyboard() }
@@ -139,8 +139,8 @@ struct CreateView: View {
     }
     .navigationBarBackButtonHidden()
   }
-
-private func generateTextToImage(userId: String, prompt: String, completion: @escaping (Result<GenerationData, Error>) -> Void) {
+  
+  private func generateTextToImage(userId: String, prompt: String, completion: @escaping (Result<GenerationData, Error>) -> Void) {
     AvatarAPI.shared.generateTextToImage(userId: userId, prompt: prompt) { result in
       switch result {
       case .success(let response):
@@ -163,49 +163,49 @@ private func generateTextToImage(userId: String, prompt: String, completion: @es
           isCouple: nil
         )
         completion(.success(unifiedData))
-
+        
       case .failure(let error):
         completion(.failure(error))
       }
     }
   }
-
-
+  
+  
   private func generateInGodMode(userId: String, avatarId: Int, prompt: String, completion: @escaping (Result<GenerationData, Error>) -> Void) {
-      AvatarAPI.shared.generateInGodMode(userId: userId, avatarId: avatarId, prompt: prompt) { result in
-          switch result {
-          case .success(let response):
-            let unifiedData = GenerationData(
-                  id: response.id,
-                  generationId: response.generationId,
-                  jobId: response.jobId,
-                  isGodMode: true,
-                  templateId: response.templateId,
-                  preview: response.preview,
-                  resultUrl: response.resultUrl,
-                  status: response.status,
-                  startedAt: response.startedAt,
-                  finishedAt: response.finishedAt
-              )
-              completion(.success(unifiedData))
-          case .failure(let error):
-              completion(.failure(error))
-          }
+    AvatarAPI.shared.generateInGodMode(userId: userId, avatarId: avatarId, prompt: prompt) { result in
+      switch result {
+      case .success(let response):
+        let unifiedData = GenerationData(
+          id: response.id,
+          generationId: response.generationId,
+          jobId: response.jobId,
+          isGodMode: true,
+          templateId: response.templateId,
+          preview: response.preview,
+          resultUrl: response.resultUrl,
+          status: response.status,
+          startedAt: response.startedAt,
+          finishedAt: response.finishedAt
+        )
+        completion(.success(unifiedData))
+      case .failure(let error):
+        completion(.failure(error))
       }
-  }
-
-private func selectedGenerationMethod() -> (String, @escaping (Result<GenerationData, Error>) -> Void) -> Void {
-    if let avatarId = selectedAvatarId, !promptText.isEmpty {
-        return { userId, completion in
-            generateInGodMode(userId: userId, avatarId: avatarId, prompt: promptText, completion: completion)
-        }
-    } else {
-        return { userId, completion in
-            generateTextToImage(userId: userId, prompt: promptText, completion: completion)
-        }
     }
-}
-
+  }
+  
+  private func selectedGenerationMethod() -> (String, @escaping (Result<GenerationData, Error>) -> Void) -> Void {
+    if let avatarId = selectedAvatarId, !promptText.isEmpty {
+      return { userId, completion in
+        generateInGodMode(userId: userId, avatarId: avatarId, prompt: promptText, completion: completion)
+      }
+    } else {
+      return { userId, completion in
+        generateTextToImage(userId: userId, prompt: promptText, completion: completion)
+      }
+    }
+  }
+  
   private func fetchAvatarsIfNeeded() {
     avatarAPI.fetchAvatars { result in
       DispatchQueue.main.async {

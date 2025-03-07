@@ -8,7 +8,7 @@ class CoreDataManager {
         persistentContainer = NSPersistentContainer(name: "PresetCache")
         persistentContainer.loadPersistentStores { description, error in
             if let error = error {
-                fatalError("❌ Ошибка загрузки Core Data: \(error)")
+                fatalError("❌ Error loading Core Data: \(error)")
             }
         }
     }
@@ -21,7 +21,7 @@ class CoreDataManager {
         do {
             try context.save()
         } catch {
-            print("❌ Ошибка сохранения в Core Data: \(error.localizedDescription)")
+            print("❌ Error save in Core Data: \(error.localizedDescription)")
         }
     }
 }

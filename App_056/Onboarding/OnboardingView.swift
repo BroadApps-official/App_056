@@ -87,65 +87,57 @@ struct OnboardingView: View {
   }
   
   private func handleLoginAndSubscription() {
-      if !apiManager.isLoggedIn {
-          AvatarAPI.shared.loginUser { success in
-              if success {
-                  print("✅ Успешный логин, загрузка пресетов...")
-
-                  // Загружаем пресеты
-                  let group = DispatchGroup()
-
-                  group.enter()
-                  apiManager.fetchPresets(gender: "f") { result in
-                      switch result {
-                      case .success(let presets):
-                          print("✅ Загружены женские пресеты: \(presets.count) шт.")
-                      case .failure(let error):
-                          print("❌ Ошибка загрузки женских пресетов: \(error.localizedDescription)")
-                      }
-                      group.leave()
-                  }
-
-                  group.enter()
-                  apiManager.fetchPresets(gender: "m") { result in
-                      switch result {
-                      case .success(let presets):
-                          print("✅ Загружены мужские пресеты: \(presets.count) шт.")
-                      case .failure(let error):
-                          print("❌ Ошибка загрузки мужских пресетов: \(error.localizedDescription)")
-                      }
-                      group.leave()
-                  }
-
-                  // После загрузки пресетов проверяем подписку
-                  group.notify(queue: .main) {
-                      print("📌 Передаем userId в setPaidPlan: \(apiManager.userId)")
-
-                      AvatarAPI.shared.setPaidPlan(productId: 22) { result in
-                          switch result {
-                          case .success(let response):
-                              print("✅ Подписка активирована: \(response)")
-
-                              // Только после успешной подписки добавляем аватары
-                              AvatarAPI.shared.addAvatarGeneration { result in
-                                  switch result {
-                                  case .success(let response):
-                                      print("✅ Avatars added: \(response)")
-                                  case .failure(let error):
-                                      print("❌ Error avatars added: \(error.localizedDescription)")
-                                  }
-                              }
-
-                          case .failure(let error):
-                              print("❌ Ошибка активации подписки: \(error.localizedDescription)")
-                          }
-                      }
-                  }
-              } else {
-                  print("❌ Ошибка логина. Пресеты не загружаем.")
-              }
+    if !apiManager.isLoggedIn {
+      AvatarAPI.shared.loginUser { success in
+        if success {
+          let group = DispatchGroup()
+          
+          group.enter()
+          apiManager.fetchPresets(gender: "f") { result in
+            switch result {
+            case .success(let presets):
+              print("✅ load female presets: \(presets.count) шт.")
+            case .failure(let error):
+              print("❌: \(error.localizedDescription)")
+            }
+            group.leave()
           }
+          
+          group.enter()
+          apiManager.fetchPresets(gender: "m") { result in
+            switch result {
+            case .success(let presets):
+              print("✅ load male presets: \(presets.count) шт.")
+            case .failure(let error):
+              print("❌  \(error.localizedDescription)")
+            }
+            group.leave()
+          }
+          
+          group.notify(queue: .main) {
+            
+            AvatarAPI.shared.setPaidPlan(productId: 22) { result in
+              switch result {
+              case .success(let response):
+                AvatarAPI.shared.addAvatarGeneration { result in
+                  switch result {
+                  case .success(let response):
+                    print("✅ Avatars added: \(response)")
+                  case .failure(let error):
+                    print("❌ Error avatars added: \(error.localizedDescription)")
+                  }
+                }
+                
+              case .failure(let error):
+                print("❌  \(error.localizedDescription)")
+              }
+            }
+          }
+        } else {
+          print("❌")
+        }
       }
+    }
   }
   
   private func requestReview() {

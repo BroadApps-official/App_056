@@ -24,7 +24,6 @@ class SubscriptionManager: ObservableObject {
         Apphud.paywallShown(paywall)
         let products = paywall.products
         self.productsApphud = products
-        print("✅ Loaded products:", products.map { $0.skProduct?.productIdentifier ?? "nil" })
       } else {
         print("❌ Paywall with id \(self.paywallID) not found")
       }

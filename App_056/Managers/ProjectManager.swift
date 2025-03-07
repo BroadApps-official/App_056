@@ -6,27 +6,27 @@ class ProjectManager: ObservableObject {
   private init() {
     loadProjects()
   }
-
+  
   private let context = CoreDataManager.shared.context
-
+  
   @Published var presets: [Project] = []
   @Published var artworks: [Project] = []
-
+  
   func addToPreset(_ project: Project) {
     saveToCoreData(project, category: "Preset")
     loadProjects()
   }
-
+  
   func addToArtwork(_ project: Project) {
     saveToCoreData(project, category: "Artwork")
     loadProjects()
   }
-
+  
   func loadProjects() {
     let fetchRequest: NSFetchRequest<CachedProject> = CachedProject.fetchRequest()
     do {
       let cachedProjects = try context.fetch(fetchRequest)
-
+      
       DispatchQueue.main.async {
         self.presets = cachedProjects
           .filter { $0.category == "Preset" }
@@ -37,7 +37,7 @@ class ProjectManager: ObservableObject {
             isSelected: $0.isSelected,
             isLoading: false
           )}
-
+        
         self.artworks = cachedProjects
           .filter { $0.category == "Artwork" }
           .map { Project(
@@ -47,24 +47,22 @@ class ProjectManager: ObservableObject {
             isSelected: $0.isSelected,
             isLoading: false
           )}
-
-        print("✅ Загружено \(self.presets.count) пресетов и \(self.artworks.count) артворков")
       }
     } catch {
-      print("❌ Ошибка загрузки проектов: \(error.localizedDescription)")
+      print("❌ \(error.localizedDescription)")
     }
   }
-
+  
   func updateProjectImage(projectId: String, newImageUrl: String) {
     let fetchRequest: NSFetchRequest<CachedProject> = CachedProject.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "id == %@", projectId)
-
+    
     do {
       if let projectToUpdate = try context.fetch(fetchRequest).first {
         projectToUpdate.imageName = newImageUrl
         projectToUpdate.isLoading = false
         try context.save()
-
+        
         DispatchQueue.main.async {
           if let index = self.presets.firstIndex(where: { $0.id == projectId }) {
             self.presets[index].imageName = newImageUrl
@@ -76,37 +74,33 @@ class ProjectManager: ObservableObject {
             self.objectWillChange.send()
           }
         }
-        print("✅ Проект обновлен: \(newImageUrl)")
       } else {
-        print("Не найден проект в CoreData по id = \(projectId)")
-    }
+      }
     } catch {
-      print("❌ Ошибка обновления проекта: \(error)")
+      print("❌\(error)")
     }
-
   }
-
+  
   func deleteProject(_ project: Project) {
     let fetchRequest: NSFetchRequest<CachedProject> = CachedProject.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "id == %@", project.id)
-
+    
     do {
       let results = try context.fetch(fetchRequest)
       results.forEach { context.delete($0) }
       try context.save()
-      print("🗑️ Проект удален из Core Data")
-
+      
       if let index = presets.firstIndex(where: { $0.id == project.id }) {
         presets.remove(at: index)
       } else if let index = artworks.firstIndex(where: { $0.id == project.id }) {
         artworks.remove(at: index)
       }
-
+      
     } catch {
-      print("❌ Ошибка удаления проекта: \(error.localizedDescription)")
+      print("❌ \(error.localizedDescription)")
     }
   }
-
+  
   func saveToCoreData(_ project: Project, category: String) {
     let cachedProject = CachedProject(context: context)
     cachedProject.id = project.id
@@ -114,12 +108,11 @@ class ProjectManager: ObservableObject {
     cachedProject.date = project.date
     cachedProject.isSelected = project.isSelected
     cachedProject.category = category
-
+    
     do {
       try context.save()
-      print("✅ Проект сохранен в Core Data (\(category))")
     } catch {
-      print("❌ Ошибка сохранения проекта: \(error.localizedDescription)")
+      print("❌ \(error.localizedDescription)")
     }
   }
 }

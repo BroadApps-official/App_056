@@ -39,11 +39,6 @@ struct AvatarListResponse: Codable {
   let data: [Avatar]
 }
 
-//struct Avatar: Codable, Identifiable {
-//    let id: Int
-//    let imageUrl: String?
-//}
-
 struct UploadAvatarResponse: Codable {
   let id: Int
   let status: String

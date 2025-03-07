@@ -156,7 +156,7 @@ struct SettingsView: View {
   }
   
   private func sendEmail() {
-    let email = "support@example.com"
+    let email = "magnatamanju@gmail.com"
     let mailtoString = "mailto:\(email)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
     if let url = URL(string: mailtoString) {
       UIApplication.shared.open(url)

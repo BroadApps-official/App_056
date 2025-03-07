@@ -8,11 +8,12 @@ struct CreateAIAvatarView: View {
     Instruction(imageName: "inst3", text: "There must be nothing covering your face")
   ]
   @State private var navigateToGallery = false
-
+  let onComplete: () -> Void
+  
   var body: some View {
     ZStack {
       Color.black.ignoresSafeArea()
-
+      
       VStack(alignment: .leading, spacing: 16) {
         HStack {
           Button(action: {
@@ -30,58 +31,58 @@ struct CreateAIAvatarView: View {
           Spacer()
         }
         .padding(.horizontal, 16)
-
+        
         Text("Pick from 10 to 50 of your best photos")
           .font(.system(size: 18, weight: .bold))
           .foregroundColor(.white)
           .padding(.horizontal, 16)
-
+        
         Text("This is a one-time process")
           .font(.system(size: 14))
           .foregroundColor(.gray)
           .padding(.horizontal, 16)
-
+        
         ForEach($instructions) { $instruction in
           InstructionRow(instruction: $instruction)
         }
         .padding(.horizontal, 16)
-
+        
         Spacer()
-
+        
         HStack {
           Spacer()
           Image("inst4")
           Spacer()
         }
-
+        
         Spacer()
-
-        NavigationLink(destination: GalleryPickerView()) {
-            Text("Next")
-                .font(.system(size: 18, weight: .bold))
-                .frame(maxWidth: .infinity, maxHeight: 65)
-                .background(GradientStyles.gradient2)
-                .foregroundColor(.white)
-                .clipShape(Capsule())
-                .padding(.horizontal, 16)
-                .padding(.bottom, 20)
+        
+        NavigationLink(destination: GalleryPickerView(onComplete: onComplete)) {
+          Text("Next")
+            .font(.system(size: 18, weight: .bold))
+            .frame(maxWidth: .infinity, maxHeight: 65)
+            .background(GradientStyles.gradient2)
+            .foregroundColor(.white)
+            .clipShape(Capsule())
+            .padding(.horizontal, 16)
+            .padding(.bottom, 20)
         }
       }
     }
-      .navigationBarBackButtonHidden()
+    .navigationBarBackButtonHidden()
   }
 }
 
 struct InstructionRow: View {
   @Binding var instruction: Instruction
-
+  
   var body: some View {
     HStack {
       Image(instruction.imageName)
         .resizable()
         .scaledToFill()
         .frame(width: 54, height: 56)
-
+      
       Text(instruction.text)
         .font(.system(size: 16))
         .foregroundColor(.white)

@@ -155,10 +155,9 @@ struct PresetDetailView: View {
               DispatchQueue.main.async {
                 switch result {
                 case .success(let generationData):
-                  print("✅ Генерация успешна: ID \(generationData.generationId), статус: \(generationData.status)")
                   showGeneratingView = true
                 case .failure(let error):
-                  print("❌ Ошибка генерации: \(error.localizedDescription)")
+                  print("❌ \(error.localizedDescription)")
                 }
               }
             }
@@ -176,6 +175,9 @@ struct PresetDetailView: View {
             .foregroundColor(.white)
             .clipShape(Capsule())
           }
+          .padding(.horizontal, 20)
+          .padding(.bottom, 20)
+
           .disabled(selectedAvatarId == nil)
           .navigationDestination(isPresented: $showGeneratingView) {
             GeneratingView(
@@ -191,7 +193,7 @@ struct PresetDetailView: View {
         }
       }
       .navigationDestination(isPresented: $navigateToCreateAvatar) {
-        CreateAIAvatarView()
+        CreateAIAvatarView(onComplete: {})
       }
       .onAppear {
         fetchAvatars()
@@ -268,7 +270,6 @@ struct PresetDetailView: View {
         switch result {
         case .success(let fetchedAvatars):
           self.avatars = fetchedAvatars
-          print("✅ Загружено \(fetchedAvatars.count) аватаров")
         case .failure(let error):
           print("❌ Error loading avatars: \(error.localizedDescription)")
         }
@@ -287,7 +288,7 @@ struct PresetDetailView: View {
         presetImage = UIImage(data: imageData)
       }
     } catch {
-      print("❌ Ошибка загрузки изображения пресета из Core Data: \(error.localizedDescription)")
+      print("❌ \(error.localizedDescription)")
     }
   }
 }

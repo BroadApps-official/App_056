@@ -9,7 +9,7 @@ struct PresetView: View {
   @State private var showPaywall = false
   @State private var presets: [PresetCategory] = []
   @State private var isLoading = true
-
+  
   var body: some View {
     NavigationStack {
       VStack(spacing: 0) {
@@ -25,7 +25,7 @@ struct PresetView: View {
                   .resizable()
                   .frame(width: 12, height: 10)
                   .foregroundColor(.white)
-
+                
                 Text("Pro")
                   .foregroundColor(.white)
                   .font(Typography.bodyMedium)
@@ -38,7 +38,7 @@ struct PresetView: View {
           } else {
             Spacer().frame(width: 40)
           }
-
+          
           NavigationLink(destination: SettingsView()) {
             Image(systemName: "gearshape")
               .foregroundColor(ColorTokens.orange)
@@ -47,7 +47,7 @@ struct PresetView: View {
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)
-
+        
         ScrollView {
           VStack(spacing: 20) {
             ForEach(apiManager.presets.filter { !$0.templates.isEmpty }) { category in
@@ -64,7 +64,6 @@ struct PresetView: View {
         PaywallView()
       }
       .onAppear {
-        //              loadPresets()
         if apiManager.presets.isEmpty {
           apiManager.fetchPresets(gender: apiManager.gender) { result in
             switch result {
@@ -96,7 +95,7 @@ struct PresetView: View {
 
 struct CategoryView: View {
   let category: PresetCategory
-
+  
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
       HStack {
@@ -112,7 +111,7 @@ struct CategoryView: View {
         }
       }
       .padding(.horizontal, 8)
-
+      
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 12) {
           ForEach(category.templates.prefix(2)) { template in
