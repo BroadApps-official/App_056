@@ -13,7 +13,8 @@ struct CreateView: View {
   @EnvironmentObject var tabManager: TabManager
   @EnvironmentObject var networkMonitor: NetworkMonitor
   @State private var showAlert = false
-  
+  @FocusState private var isTextEditorFocused: Bool
+
   var isGenerateButtonActive: Bool {
     return !promptText.isEmpty
   }
@@ -73,6 +74,7 @@ struct CreateView: View {
             }
             
             TextEditor(text: $promptText)
+              .focused($isTextEditorFocused)
               .scrollContentBackground(.hidden)
               .background(Color.gray.opacity(0.2))
               .foregroundColor(.white)

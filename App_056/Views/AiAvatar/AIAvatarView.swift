@@ -47,7 +47,7 @@ struct AIAvatarView: View {
               )
             }
             
-            if totalAvatars < 5 {
+            if totalAvatars < 2 {
               Button(action: {
                 isShowingCreationFlow = true
               }) {
