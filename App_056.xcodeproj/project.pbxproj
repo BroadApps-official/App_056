@@ -268,7 +268,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Flux AI Avatar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Generator - AI Avatar";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = App_056;
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "";
@@ -306,7 +306,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Flux AI Avatar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Photo Generator - AI Avatar";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = App_056;
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "";
