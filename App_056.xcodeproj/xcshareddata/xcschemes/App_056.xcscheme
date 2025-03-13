@@ -51,7 +51,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../../App_056/Flux Ai.storekit">
+         identifier = "../../App_056/AvatarAi.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

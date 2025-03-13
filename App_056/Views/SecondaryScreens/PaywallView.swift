@@ -43,7 +43,7 @@ struct PaywallView: View {
             )
           )
           .overlay(
-            Text("FLUX AI")
+            Text("AI Avatar")
               .font(.system(size: 60, weight: .bold))
               .foregroundColor(.white)
               .padding(.top, -170)
@@ -202,15 +202,15 @@ enum SubscriptionPlan: String, CaseIterable {
   
   var priceSubtitle: String {
     switch self {
-    case .yearly: return "$2.08 per week"
+    case .yearly: return "$0.77 per week"
     case .weekly: return ""
     }
   }
   
   var productId: String {
     switch self {
-    case .yearly: return "yearly_99.99_nottrial"
-    case .weekly: return "week_9.99_nottrial"
+    case .yearly: return "yearly_39.99_nottrial."
+    case .weekly: return "week_7.99_nottrial."
     }
   }
 }

@@ -73,7 +73,7 @@ struct IntroScreen: View {
       
       VStack(spacing: 0) {
         VStack(spacing: 8) {
-          Text("Welcome to FLUX AI")
+          Text("AI Avatar")
             .font(Typography.largeTitle)
             .foregroundColor(.white)
           

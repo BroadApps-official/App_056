@@ -8,8 +8,8 @@ class SubscriptionManager: ObservableObject {
   @Published var productsApphud: [ApphudProduct] = []
   @Published var isSubscribed: Bool = false
   
-  private let weeklyProductID = "week_9.99_nottrial"
-  private let yearlyProductID = "yearly_99.99_nottrial"
+  private let weeklyProductID = "week_7.99_nottrial."
+  private let yearlyProductID = "yearly_39.99_nottrial."
   private let paywallID = "main"
   let buyPublisher = PassthroughSubject<Bool, Never>()
   
@@ -105,4 +105,14 @@ class SubscriptionManager: ObservableObject {
     print("✅ Price is \(productId): \(priceString)")
     return priceString
   }
+}
+
+extension SubscriptionManager {
+    func getRawPrice(for plan: SubscriptionPlan) -> Double? {
+        guard let product = productsApphud.first(where: { $0.skProduct?.productIdentifier == plan.productId }),
+              let price = product.skProduct?.price.doubleValue else {
+            return nil
+        }
+        return price
+    }
 }

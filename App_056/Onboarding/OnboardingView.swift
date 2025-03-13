@@ -13,7 +13,7 @@ struct OnboardingView: View {
     VStack {
       GeometryReader { geometry in
         TabView(selection: $currentPage) {
-          OnboardingPage(imageName: "onboard1", title: "Welcome to FLUX AI", description: "Craft visuals in seconds", index: 0, widthPad: true, offset: 0)
+          OnboardingPage(imageName: "onboard1", title: "Welcome to AI Avatar", description: "Craft visuals in seconds", index: 0, widthPad: true, offset: 0)
             .tag(0)
           OnboardingPageOther(imageName: "onboard2", title: "Endless Possibilities", description: "Design anything with AI", index: 1)
             .tag(1)

@@ -83,7 +83,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "9.99",
+          "displayPrice" : "7.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "ADA99121",
@@ -91,13 +91,13 @@
           "localizations" : [
             {
               "description" : "",
-              "displayName" : "",
+              "displayName" : "AI Avatar",
               "locale" : "en_US"
             }
           ],
-          "productID" : "week_9.99_nottrial",
+          "productID" : "week_7.99_nottrial.",
           "recurringSubscriptionPeriod" : "P1W",
-          "referenceName" : "week_9.99_nottrial",
+          "referenceName" : "week_7.99_nottrial.",
           "subscriptionGroupID" : "7B938941",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
@@ -111,7 +111,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "99.99",
+          "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "63FAA1A5",
@@ -119,13 +119,13 @@
           "localizations" : [
             {
               "description" : "",
-              "displayName" : "",
+              "displayName" : "AI Avatar",
               "locale" : "en_US"
             }
           ],
-          "productID" : "yearly_99.99_nottrial",
+          "productID" : "yearly_39.99_nottrial.",
           "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "yearly_99.99_nottrial",
+          "referenceName" : "yearly_39.99_nottrial.",
           "subscriptionGroupID" : "7B938941",
           "type" : "RecurringSubscription",
           "winbackOffers" : [

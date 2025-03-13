@@ -14,7 +14,7 @@ struct PresetView: View {
     NavigationStack {
       VStack(spacing: 0) {
         HStack {
-          Text("FLUX AI")
+          Text("AI Avatar")
             .font(.system(size: 28, weight: .bold))
             .foregroundColor(.white)
           Spacer()

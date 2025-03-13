@@ -25,7 +25,7 @@ struct ProjectView: View {
           Color.black.ignoresSafeArea()
           VStack(alignment: .leading, spacing: 12) {
             HStack {
-              Text("FLUX AI")
+              Text("AI Avatar")
                 .font(.system(size: 28, weight: .bold))
                 .foregroundColor(.white)
               Spacer()
