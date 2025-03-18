@@ -268,7 +268,8 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Photo Generator - AI Avatar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Face Photo Maker";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photos to apply amazing effects.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Add a photo so we can do a cool effect with it";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use the data to provide more personalized advertising and improve your user experience.";
@@ -306,7 +307,8 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Photo Generator - AI Avatar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Face Photo Maker";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photos to apply amazing effects.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Add a photo so we can do a cool effect with it";
 				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use the data to provide more personalized advertising and improve your user experience.";
