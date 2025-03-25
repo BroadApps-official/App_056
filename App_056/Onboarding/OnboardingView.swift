@@ -44,7 +44,7 @@ struct OnboardingView: View {
           .frame(maxWidth: .infinity)
           .frame(height: 32)
           .padding()
-          .background(GradientStyles.gradient2)
+          .background(GradientStyles.gradient1)
           .foregroundColor(.white)
           .cornerRadius(100)
           .padding(.horizontal, 20)

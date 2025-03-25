@@ -77,7 +77,7 @@ struct AIAvatarView: View {
               .font(.system(size: 18, weight: .bold))
               .frame(maxWidth: .infinity)
               .frame(height: 64)
-              .background(avatars.count < 2 ? GradientStyles.gradient2 : GradientStyles.gradient3)
+              .background(avatars.count < 2 ? GradientStyles.gradient1 : GradientStyles.gradient3)
               .foregroundColor(.white)
               .clipShape(Capsule())
           }

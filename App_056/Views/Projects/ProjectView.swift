@@ -273,7 +273,7 @@ struct EmptyStateView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 64)
-        .background(GradientStyles.gradient2)
+        .background(GradientStyles.gradient1)
         .foregroundColor(.white)
         .clipShape(Capsule())
       }

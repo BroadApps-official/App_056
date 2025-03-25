@@ -79,7 +79,7 @@ struct AddGenderView: View {
           }
           .frame(maxWidth: .infinity)
           .frame(height: 64)
-          .background(selectedGender == nil ? GradientStyles.gradient3 : GradientStyles.gradient2)
+          .background(selectedGender == nil ? GradientStyles.gradient3 : GradientStyles.gradient1)
           .foregroundColor(.white)
           .clipShape(Capsule())
         }

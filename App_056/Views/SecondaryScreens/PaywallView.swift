@@ -98,7 +98,7 @@ struct PaywallView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 64)
             .background(
-              GradientStyles.gradient2
+              GradientStyles.gradient1
             )
             .foregroundColor(.white)
             .clipShape(Capsule())
@@ -152,7 +152,7 @@ struct SubscriptionFeature: View {
   var body: some View {
     HStack {
       Image(systemName: "checkmark.circle.fill")
-        .foregroundColor(.red)
+        .foregroundColor(ColorTokens.accent)
       Text(text)
         .font(.system(size: 16))
         .foregroundColor(.white)
@@ -184,7 +184,7 @@ struct SubscriptionOptionView: View {
       .padding()
       .background(
         RoundedRectangle(cornerRadius: 12)
-          .stroke(selectedPlan == plan ? GradientStyles.gradient2 : GradientStyles.gradient3, lineWidth: 2)
+          .stroke(selectedPlan == plan ? GradientStyles.gradient1 : GradientStyles.gradient3, lineWidth: 2)
       )
     }
   }

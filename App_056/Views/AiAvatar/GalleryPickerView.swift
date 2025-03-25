@@ -58,7 +58,7 @@ struct GalleryPickerView: View {
           .font(.system(size: 18, weight: .bold))
           .frame(maxWidth: .infinity)
           .frame(height: 64)
-          .background(selectedImages.count < 10 ? GradientStyles.gradient3 : GradientStyles.gradient2)
+          .background(selectedImages.count < 10 ? GradientStyles.gradient3 : GradientStyles.gradient1)
           .foregroundColor(.white)
           .clipShape(Capsule())
       }

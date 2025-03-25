@@ -7,14 +7,13 @@ struct RotatingArcView: View {
       .trim(from: 0.0, to: 0.25)
       .stroke(
         LinearGradient(
-          gradient: Gradient(colors: [
-            Color(red: 1, green: 0, blue: 0.133),
-            Color(red: 1, green: 0, blue: 0.133),
-            Color(red: 1, green: 0.4, blue: 0),
-            Color(red: 1, green: 0.667, blue: 0)
-          ]),
-          startPoint: .leading,
-          endPoint: .trailing
+            gradient: Gradient(colors: [
+              Color(hex: "#00BFFF").opacity(0),
+              Color(hex: "#00BFFF"),
+              Color(hex: "#1100FF"),
+            ]),
+            startPoint: .top,
+            endPoint: .bottom
         ),
         style: StrokeStyle(lineWidth: 8, lineCap: .round)
       )

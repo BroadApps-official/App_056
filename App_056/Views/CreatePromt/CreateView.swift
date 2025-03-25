@@ -100,7 +100,7 @@ struct CreateView: View {
           }
           .frame(maxWidth: .infinity)
           .frame(height: 64)
-          .background(isGenerateButtonActive ? GradientStyles.gradient2 : GradientStyles.gradient3)
+          .background(isGenerateButtonActive ? GradientStyles.gradient1 : GradientStyles.gradient3)
           .foregroundColor(.white)
           .clipShape(Capsule())
         }

@@ -254,7 +254,7 @@ struct NotificationButtonStyle: ButtonStyle {
             .background(
                 isDisabled
                 ? GradientStyles.gradient3
-                : GradientStyles.gradient2
+                : GradientStyles.gradient1
             )
             .foregroundColor(.white)
             .clipShape(Capsule())

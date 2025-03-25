@@ -171,7 +171,7 @@ struct PresetDetailView: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 64)
-            .background(selectedAvatarId == nil ? GradientStyles.gradient3 : GradientStyles.gradient2)
+            .background(selectedAvatarId == nil ? GradientStyles.gradient3 : GradientStyles.gradient1)
             .foregroundColor(.white)
             .clipShape(Capsule())
           }

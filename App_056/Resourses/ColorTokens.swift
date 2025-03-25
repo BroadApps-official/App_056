@@ -2,9 +2,9 @@ import SwiftUI
 
 struct ColorTokens {
   
-  static let accent = Color(hex: "#FF3318")
-  static let orange = Color(hex: "#FF3318")
-  
+  static let accent = Color(hex: "#00BFFF")
+  static let orange = Color(hex: "#00BFFF")
+
   static let gradient1Start = Color(hex: "#FF0022")
   static let gradient1End = Color(hex: "#FFAA00")
   
@@ -73,8 +73,8 @@ extension Color {
 struct GradientStyles {
   static let gradient1 = LinearGradient(
     gradient: Gradient(colors: [
-      Color(red: 255/255, green: 0/255, blue: 34/255),
-      Color(red: 255/255, green: 170/255, blue: 0/255)
+      Color(red: 0/255, green: 191/255, blue: 255/255),
+      Color(red: 17/255, green: 0/255, blue: 255/255)
     ]),
     startPoint: .topLeading,
     endPoint: .bottomTrailing

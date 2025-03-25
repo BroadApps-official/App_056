@@ -32,7 +32,7 @@ struct PresetView: View {
               }
               .padding(.horizontal, 5)
               .frame(width: 69, height: 32)
-              .background(GradientStyles.gradient2)
+              .background(GradientStyles.gradient1)
               .clipShape(Capsule())
             }
           } else {

@@ -61,7 +61,7 @@ struct CreateAIAvatarView: View {
           Text("Next")
             .font(.system(size: 18, weight: .bold))
             .frame(maxWidth: .infinity, maxHeight: 65)
-            .background(GradientStyles.gradient2)
+            .background(GradientStyles.gradient1)
             .foregroundColor(.white)
             .clipShape(Capsule())
             .padding(.horizontal, 16)
