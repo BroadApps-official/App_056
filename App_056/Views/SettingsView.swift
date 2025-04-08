@@ -84,7 +84,7 @@ struct SettingsView: View {
   
   private func settingsSection(items: [(String, String, (() -> Void)?, (() -> AnyView)?)] ) -> some View {
     VStack(spacing: 0) {
-      ForEach(items.indices, id: \.self) { index in
+      ForEach(0..<items.count, id: \.self) { index in
         settingsRow(
           title: items[index].0,
           icon: items[index].1,
@@ -137,7 +137,8 @@ struct SettingsView: View {
                       notificationManager.disableNotifications()
                   }
               }
-            .tint(ColorTokens.orange)
+              .tint(ColorTokens.orange)
+              .toggleStyle(SwitchToggleStyle())
       )
   }
 
