@@ -19,71 +19,76 @@ struct AIAvatarView: View {
   let onComplete: () -> Void
   
   var body: some View {
-    ZStack {
-      Color.black.ignoresSafeArea()
-      
-      VStack {
-        HStack {
-          Spacer()
-          Text("AI Avatar")
-            .font(.system(size: 20, weight: .semibold))
-            .foregroundColor(.white)
-          Spacer()
-        }
-        .padding(.top, 20)
+    GeometryReader { geometry in
+      ZStack {
+        Color.black.ignoresSafeArea()
         
-        ScrollView(.horizontal, showsIndicators: false) {
-          HStack(spacing: 16) {
-            if generationManager.isGenerating {
-              PlaceholderAvatarView()
-            }
-            ForEach(avatars, id: \.id) { avatar in
-              AvatarItemView(
-                avatar: avatar,
-                isSelected: selectedAvatarId == avatar.id,
-                onSelect: {
-                  selectedAvatarId = avatar.id
-                }
-              )
-            }
-            
-            if totalAvatars < 2 {
-              Button(action: {
-                isShowingCreationFlow = true
-              }) {
-                ZStack {
-                  Circle()
-                    .fill(Color.gray.opacity(0.5))
-                    .frame(width: 100, height: 100)
-                  Image(systemName: "plus")
-                    .font(.system(size: 24))
-                    .foregroundColor(.white)
+        VStack(spacing: geometry.size.height * 0.02) {
+          // Header
+          HStack {
+            Spacer()
+            Text("AI Avatar")
+              .font(.system(size: min(geometry.size.width * 0.06, 24), weight: .semibold))
+              .foregroundColor(.white)
+            Spacer()
+          }
+          .padding(.top, geometry.size.height * 0.02)
+          
+          // Avatars ScrollView
+          ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: geometry.size.width * 0.04) {
+              if generationManager.isGenerating {
+                PlaceholderAvatarView(size: geometry.size.width * 0.25)
+              }
+              ForEach(avatars, id: \.id) { avatar in
+                AvatarItemView(
+                  avatar: avatar,
+                  isSelected: selectedAvatarId == avatar.id,
+                  onSelect: {
+                    selectedAvatarId = avatar.id
+                  },
+                  size: geometry.size.width * 0.25
+                )
+              }
+              
+              if totalAvatars < 2 {
+                Button(action: {
+                  isShowingCreationFlow = true
+                }) {
+                  ZStack {
+                    Circle()
+                      .fill(Color.gray.opacity(0.5))
+                      .frame(width: geometry.size.width * 0.25, height: geometry.size.width * 0.25)
+                    Image(systemName: "plus")
+                      .font(.system(size: min(geometry.size.width * 0.08, 32)))
+                      .foregroundColor(.white)
+                  }
                 }
               }
             }
+            .padding(.horizontal, geometry.size.width * 0.04)
+            .padding(.top, geometry.size.height * 0.02)
           }
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 20)
-        
-        
-        Spacer()
-        
-        if totalAvatars > 0 && totalAvatars < 3 {
-          Button(action: {
-            isShowingCreationFlow = true
-          }) {
-            Text("Create New")
-              .font(.system(size: 18, weight: .bold))
-              .frame(maxWidth: .infinity)
-              .frame(height: 64)
-              .background(avatars.count < 2 ? GradientStyles.gradient1 : GradientStyles.gradient3)
-              .foregroundColor(.white)
-              .clipShape(Capsule())
+          
+          Spacer()
+          
+          // Create New Button
+          if totalAvatars > 0 && totalAvatars < 3 {
+            Button(action: {
+              isShowingCreationFlow = true
+            }) {
+              Text("Create New")
+                .font(.system(size: min(geometry.size.width * 0.045, 18), weight: .bold))
+                .frame(maxWidth: .infinity)
+                .frame(height: geometry.size.height * 0.07)
+                .background(avatars.count < 2 ? GradientStyles.gradient1 : GradientStyles.gradient3)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
+            }
+            .disabled(avatars.count >= 2)
+            .padding(.horizontal, geometry.size.width * 0.05)
+            .padding(.bottom, geometry.size.height * 0.05)
           }
-          .disabled(avatars.count >= 2)
-          .padding(.horizontal, 20)
-          .padding(.bottom, 50)
         }
       }
     }
@@ -116,19 +121,17 @@ struct AIAvatarView: View {
   
   private func fetchAvatars() {
     avatarAPI.fetchAvatars { result in
-      DispatchQueue.main.async {
-        switch result {
-        case .success(let fetchedAvatars):
-          let previousCount = self.avatars.count
-          self.avatars = fetchedAvatars
-          print("✅ Load \(self.avatars.count) avatars")
-          if self.generationManager.isGenerating, fetchedAvatars.count == previousCount + 1 {
-            self.generationManager.isGenerating = false
-          }
-          
-        case .failure(let error):
-          print("❌ Error loading avatar \(error.localizedDescription)")
+      switch result {
+      case .success(let fetchedAvatars):
+        let previousCount = self.avatars.count
+        self.avatars = fetchedAvatars
+        print("✅ Load \(self.avatars.count) avatars")
+        if self.generationManager.isGenerating, fetchedAvatars.count == previousCount + 1 {
+          self.generationManager.isGenerating = false
         }
+        
+      case .failure(let error):
+        print("❌ Error loading avatar \(error.localizedDescription)")
       }
     }
   }
@@ -138,11 +141,13 @@ struct AvatarItemView: View {
   let avatar: Avatar
   let isSelected: Bool
   let onSelect: () -> Void
+  let size: CGFloat
   
   var body: some View {
     ZStack(alignment: .topTrailing) {
       if let imageUrl = avatar.preview {
         CachedAvatarAsyncImage(url: imageUrl)
+          .frame(width: size, height: size)
           .overlay(
             Circle()
               .stroke(isSelected ? ColorTokens.orange : Color.clear, lineWidth: 3)
@@ -153,26 +158,39 @@ struct AvatarItemView: View {
       } else {
         Circle()
           .fill(Color.gray.opacity(0.5))
-          .frame(width: 100, height: 100)
+          .frame(width: size, height: size)
           .onTapGesture {
             onSelect()
           }
       }
     }
-    .navigationBarBackButtonHidden()
   }
 }
 
 class AvatarGenerationManager: ObservableObject {
   @Published var isGenerating: Bool = false
 }
+
 struct PlaceholderAvatarView: View {
+  let size: CGFloat
+  
   var body: some View {
     ZStack {
       Circle()
         .fill(Color.gray.opacity(0.5))
-        .frame(width: 100, height: 100)
+        .frame(width: size, height: size)
       ProgressView()
+        .scaleEffect(1.5)
     }
   }
+}
+
+#Preview("No Avatars") {
+  AIAvatarView(
+    gender: "f",
+    uploadedPhotos: [],
+    onComplete: {}
+  )
+  .environmentObject(NetworkMonitor())
+  .environmentObject(AvatarGenerationManager())
 }

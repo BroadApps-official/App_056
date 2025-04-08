@@ -13,15 +13,15 @@ struct OnboardingView: View {
     VStack {
       GeometryReader { geometry in
         TabView(selection: $currentPage) {
-          OnboardingPage(imageName: "onboard1", title: "Welcome to AI Avatar", description: "Craft visuals in seconds", index: 0, widthPad: true, offset: 0)
+          OnboardingPage(imageName: "onboard1", title: "Welcome to AI Avatar", description: "Craft visuals in seconds", index: 0, widthPad: true, offset: CGSize(width: 0, height: 0))
             .tag(0)
           OnboardingPageOther(imageName: "onboard2", title: "Endless Possibilities", description: "Design anything with AI", index: 1)
             .tag(1)
           OnboardingPageOther(imageName: "onboard3", title: "Your Vision, Realized", description: "AI turns your words into images", index: 2)
             .tag(2)
-          OnboardingPage(imageName: "onboard4", title: "Your Feedback Matters", description: "Help us improve with your review", index: 3, widthPad: true, offset: 0)
+          OnboardingPage(imageName: "onboard4", title: "Your Feedback Matters", description: "Help us improve with your review", index: 3, widthPad: true, offset: CGSize(width: 0, height: 0))
             .tag(3)
-          OnboardingPage(imageName: "onboard5", title: "Stay Informed!", description: "Enable notifications for updates", index: 4, widthPad: false, offset: 100)
+          OnboardingPage(imageName: "onboard5", title: "Stay Informed!", description: "Enable notifications for updates", index: 4, widthPad: false, offset: CGSize(width: 0, height: 150))
             .tag(4)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))

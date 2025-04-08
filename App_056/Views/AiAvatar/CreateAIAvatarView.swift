@@ -11,82 +11,106 @@ struct CreateAIAvatarView: View {
   let onComplete: () -> Void
   
   var body: some View {
-    ZStack {
-      Color.black.ignoresSafeArea()
-      
-      VStack(alignment: .leading, spacing: 16) {
-        HStack {
-          Button(action: {
-            dismiss()
-          }) {
-            Image(systemName: "chevron.left")
+    GeometryReader { geometry in
+      ZStack {
+        Color.black.ignoresSafeArea()
+        
+        VStack(alignment: .leading, spacing: 0) {
+          // Header
+          HStack {
+            Button(action: {
+              dismiss()
+            }) {
+              Image(systemName: "chevron.left")
+                .foregroundColor(.white)
+                .padding(geometry.size.width * 0.03)
+                .background(Circle().fill(Color.gray.opacity(0.3)))
+            }
+            Spacer()
+            Text("Create AI Avatar")
+              .font(.system(size: min(geometry.size.width * 0.05, 20), weight: .semibold))
               .foregroundColor(.white)
-              .padding()
-              .background(Circle().fill(Color.gray.opacity(0.3)))
+            Spacer()
           }
-          Spacer()
-          Text("Create AI Avatar")
-            .font(.system(size: 20, weight: .semibold))
+          .padding(.horizontal, geometry.size.width * 0.04)
+          .padding(.top, geometry.size.height * 0.02)
+          
+          // Title
+          Text("Pick from 10 to 50 of your best photos")
+            .font(.system(size: min(geometry.size.width * 0.045, 18), weight: .bold))
             .foregroundColor(.white)
+            .padding(.horizontal, geometry.size.width * 0.04)
+            .padding(.top, geometry.size.height * 0.03)
+          
+          // Subtitle
+          Text("This is a one-time process")
+            .font(.system(size: min(geometry.size.width * 0.035, 14)))
+            .foregroundColor(.gray)
+            .padding(.horizontal, geometry.size.width * 0.04)
+            .padding(.top, geometry.size.height * 0.01)
+          
+          // Instructions
+          VStack(alignment: .leading, spacing: geometry.size.height * 0.04) {
+            ForEach($instructions) { $instruction in
+              InstructionRow(instruction: $instruction, geometry: geometry)
+            }
+          }
+          .padding(.horizontal, geometry.size.width * 0.04)
+          .padding(.top, geometry.size.height * 0.03)
+          
           Spacer()
-        }
-        .padding(.horizontal, 16)
-        
-        Text("Pick from 10 to 50 of your best photos")
-          .font(.system(size: 18, weight: .bold))
-          .foregroundColor(.white)
-          .padding(.horizontal, 16)
-        
-        Text("This is a one-time process")
-          .font(.system(size: 14))
-          .foregroundColor(.gray)
-          .padding(.horizontal, 16)
-        
-        ForEach($instructions) { $instruction in
-          InstructionRow(instruction: $instruction)
-        }
-        .padding(.horizontal, 16)
-        
-        Spacer()
-        
-        HStack {
+          
+          // Image
+          HStack {
+            Spacer()
+            Image("inst4")
+              .resizable()
+              .scaledToFit()
+              .frame(height: geometry.size.height * 0.35)
+            Spacer()
+          }
+          
           Spacer()
-          Image("inst4")
-          Spacer()
-        }
-        
-        Spacer()
-        
-        NavigationLink(destination: GalleryPickerView(onComplete: onComplete)) {
-          Text("Next")
-            .font(.system(size: 18, weight: .bold))
-            .frame(maxWidth: .infinity, maxHeight: 65)
-            .background(GradientStyles.gradient1)
-            .foregroundColor(.white)
-            .clipShape(Capsule())
-            .padding(.horizontal, 16)
-            .padding(.bottom, 20)
+          
+          // Next Button
+          NavigationLink(destination: GalleryPickerView(onComplete: onComplete)) {
+            Text("Next")
+              .font(.system(size: min(geometry.size.width * 0.045, 18), weight: .bold))
+              .frame(maxWidth: .infinity)
+              .frame(height: geometry.size.height * 0.07)
+              .background(GradientStyles.gradient1)
+              .foregroundColor(.white)
+              .clipShape(Capsule())
+              .padding(.horizontal, geometry.size.width * 0.04)
+              .padding(.bottom, geometry.size.height * 0.02)
+          }
         }
       }
+      .navigationBarBackButtonHidden()
     }
-    .navigationBarBackButtonHidden()
   }
 }
 
 struct InstructionRow: View {
   @Binding var instruction: Instruction
+  let geometry: GeometryProxy
   
   var body: some View {
-    HStack {
+    HStack(alignment: .center, spacing: geometry.size.width * 0.03) {
       Image(instruction.imageName)
         .resizable()
         .scaledToFill()
-        .frame(width: 54, height: 56)
+        .frame(width: geometry.size.width * 0.1, height: geometry.size.width * 0.1)
+        .clipped()
       
       Text(instruction.text)
-        .font(.system(size: 16))
+        .font(.system(size: min(geometry.size.width * 0.04, 16)))
         .foregroundColor(.white)
+        .fixedSize(horizontal: false, vertical: true)
     }
   }
 }
 
+#Preview {
+  CreateAIAvatarView(onComplete: {})
+}

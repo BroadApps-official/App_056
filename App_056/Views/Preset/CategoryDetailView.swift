@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct CategoryDetailView: View {
-  let category: PresetCategory
   @Environment(\.dismiss) var dismiss
+  let category: PresetCategory
+  @State private var selectedTemplate: PresetTemplate?
+  @State private var showPresetDetail = false
   
   var body: some View {
     VStack {
@@ -32,9 +34,11 @@ struct CategoryDetailView: View {
       ScrollView {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
           ForEach(category.templates) { template in
-            NavigationLink(destination: PresetDetailView(template: template, presetId: template.id)) {
-              TemplateCard(template: template)
-            }
+            TemplateCard(template: template)
+              .onTapGesture {
+                selectedTemplate = template
+                showPresetDetail = true
+              }
           }
         }
         .padding(.horizontal, 16)
@@ -43,6 +47,12 @@ struct CategoryDetailView: View {
     }
     .background(Color.black.edgesIgnoringSafeArea(.all))
     .navigationBarBackButtonHidden(true)
+    .navigationTitle(category.title)
+    .sheet(isPresented: $showPresetDetail) {
+      if let template = selectedTemplate {
+        PresetDetailView(template: template, presetId: template.id)
+      }
+    }
   }
 }
 

@@ -19,10 +19,14 @@ struct GalleryPickerView: View {
             .padding()
             .background(Circle().fill(Color.gray.opacity(0.3)))
         }
+        Spacer()
         Text("Selected photos")
           .font(Typography.headline)
           .foregroundColor(.white)
-          .frame(maxWidth: .infinity, alignment: .center)
+        Spacer()
+        // Add an invisible view to balance the back button
+        Color.clear
+          .frame(width: 44, height: 44)
       }
       .padding(.horizontal, 16)
       .padding(.top, 16)
@@ -73,6 +77,7 @@ struct GalleryPickerView: View {
           .opacity(0)
       }
     }
+    .background(.black)
     .sheet(isPresented: $showImagePicker) {
       PhotoPicker(selectedImages: $selectedImages, showImagePicker: $showImagePicker)
     }

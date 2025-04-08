@@ -5,7 +5,7 @@ class SubscriptionAPI {
   private let baseURL = "https://nextgenwebapps.shop/api/v1/user/setPaid"
   private let bearerToken = "f113066f-2ad6-43eb-b860-8683fde1042a"
   
-  func setPaidPlan(userId: String, productId: Int, source: String = "com.test.test", completion: @escaping (Result<[String: Any], Error>) -> Void) {
+  func setPaidPlan(userId: String, productId: Int, source: String = Bundle.main.bundleIdentifier ?? "com.test.test", completion: @escaping (Result<[String: Any], Error>) -> Void) {
     guard var urlComponents = URLComponents(string: baseURL) else {
       completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
       return

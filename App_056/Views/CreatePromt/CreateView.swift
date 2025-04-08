@@ -8,138 +8,158 @@ struct CreateView: View {
   @State private var navigateToGenerating = false
   @ObservedObject private var avatarAPI = AvatarAPI.shared
   let editorWidth = UIScreen.main.bounds.width * 0.95
-  @State private var avatars: [Avatar] = []
+  @State private var avatars: [Avatar]
   @State private var navigateToAiAvatarView = false
   @EnvironmentObject var tabManager: TabManager
   @EnvironmentObject var networkMonitor: NetworkMonitor
   @State private var showAlert = false
   @FocusState private var isTextEditorFocused: Bool
 
+  init(avatars: [Avatar] = []) {
+    _avatars = State(initialValue: avatars)
+  }
+
   var isGenerateButtonActive: Bool {
     return !promptText.isEmpty
   }
   
   var body: some View {
-    NavigationStack {
-      VStack(spacing: 16) {
-        Text("Art Creation")
-          .font(.system(size: 20, weight: .bold))
-          .foregroundColor(.white)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .padding(.top, 16)
-        
-        VStack(alignment: .leading, spacing: 12) {
-          Text("AI Art")
-            .font(.system(size: 18))
+    GeometryReader { geometry in
+      NavigationStack {
+        VStack(spacing: geometry.size.height * 0.02) {
+          Text("Art Creation")
+            .font(Typography.headline)
             .foregroundColor(.white)
-            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top, geometry.size.height * 0.02)
           
-          HStack {
-            Text("AI Avatar")
-              .font(.system(size: 16))
+          VStack(alignment: .leading, spacing: geometry.size.height * 0.015) {
+            Text("AI Art")
+              .font(.system(size: min(geometry.size.width * 0.045, 18)))
+              .fontWeight(.bold)
               .foregroundColor(.white)
             
-            Image(systemName: "info.circle")
-              .foregroundColor(.gray)
+            HStack {
+              Text("AI Avatar")
+                .font(.system(size: min(geometry.size.width * 0.04, 16)))
+                .foregroundColor(.white)
+              
+              ZStack {
+                Circle()
+                  .fill(Color.gray.opacity(0.3))
+                  .frame(width: geometry.size.width * 0.06, height: geometry.size.width * 0.06)
+                Text("!")
+                  .font(.system(size: min(geometry.size.width * 0.035, 14), weight: .bold))
+                  .foregroundColor(.gray)
+              }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            AvatarSelectionRow(
+              avatars: avatars,
+              selectedAvatarId: $selectedAvatarId,
+              showAvatarSelection: { showAvatarSelection = true },
+              navigateToAiAvatarView: $navigateToAiAvatarView,
+              geometry: geometry
+            )
+            .environmentObject(tabManager)
           }
           .frame(maxWidth: .infinity, alignment: .leading)
-          .padding(.horizontal, 16)
+          .padding(.horizontal, 20)
           
-          AvatarSelectionRow(
-            avatars: avatars,
-            selectedAvatarId: $selectedAvatarId,
-            showAvatarSelection: { showAvatarSelection = true },
-            navigateToAiAvatarView: $navigateToAiAvatarView
-          )
-          .environmentObject(tabManager)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        
-        VStack(alignment: .leading, spacing: 12) {
-          HStack {
-            Text("Enter Prompt")
-              .font(.system(size: 16))
-              .foregroundColor(.white)
-            Image(systemName: "info.circle")
-              .foregroundColor(.gray)
-          }
-          .padding(.horizontal, 26)
-          
-          ZStack(alignment: .topLeading) {
-            if promptText.isEmpty && !isEditing {
-              Text("What do you want to generate?")
-                .foregroundColor(.gray)
-                .padding(.horizontal, 30)
-                .padding(.vertical, 12)
+          VStack(alignment: .leading, spacing: geometry.size.height * 0.015) {
+            HStack {
+              Text("Enter Prompt")
+                .font(.system(size: min(geometry.size.width * 0.04, 16)))
+                .foregroundColor(.white)
+              ZStack {
+                Circle()
+                  .fill(Color.gray.opacity(0.3))
+                  .frame(width: geometry.size.width * 0.06, height: geometry.size.width * 0.06)
+                Text("!")
+                  .font(.system(size: min(geometry.size.width * 0.035, 14), weight: .bold))
+                  .foregroundColor(.gray)
+              }
             }
+            .padding(.horizontal, geometry.size.width * 0.065)
             
-            TextEditor(text: $promptText)
-              .focused($isTextEditorFocused)
-              .scrollContentBackground(.hidden)
-              .background(Color.gray.opacity(0.2))
-              .foregroundColor(.white)
-              .frame(width: editorWidth, height: 200)
-              .cornerRadius(16)
-              .padding(.horizontal, 20)
-              .onTapGesture { isEditing = true }
-              .onChange(of: promptText) { newValue in isEditing = !newValue.isEmpty }
-          }
-        }
-        
-        Spacer()
-        
-        Button(action: {
-          hideKeyboard()
-          navigateToGenerating = true
-        }) {
-          HStack {
-            Text("Generate")
-              .font(.system(size: 18, weight: .bold))
-            Image(systemName: "sparkles")
-              .font(.system(size: 20))
-          }
-          .frame(maxWidth: .infinity)
-          .frame(height: 64)
-          .background(isGenerateButtonActive ? GradientStyles.gradient1 : GradientStyles.gradient3)
-          .foregroundColor(.white)
-          .clipShape(Capsule())
-        }
-        .padding(.bottom, 50)
-        .padding(.horizontal, 20)
-        .navigationDestination(isPresented: $navigateToGenerating) {
-          if let avatarId = selectedAvatarId, !promptText.isEmpty {
-            GeneratingView(
-              isArtwork: true, gender: "f",
-              uploadedPhotos: [],
-              generationMethod: { userId, completion in
-                generateInGodMode(userId: userId, avatarId: avatarId, prompt: promptText, completion: completion)
+            ZStack(alignment: .topLeading) {
+              if promptText.isEmpty && !isEditing {
+                Text("What do you want to generate?")
+                  .foregroundColor(.gray)
+                  .padding(.horizontal, geometry.size.width * 0.075)
+                  .padding(.vertical, geometry.size.height * 0.015)
               }
-            )
-          } else {
-            GeneratingView(
-              isArtwork: true, gender: "f",
-              uploadedPhotos: [],
-              generationMethod: { userId, completion in
-                generateTextToImage(userId: userId, prompt: promptText, completion: completion)
-              }
-            )
+              
+              TextEditor(text: $promptText)
+                .focused($isTextEditorFocused)
+                .scrollContentBackground(.hidden)
+                .background(Color.gray.opacity(0.2))
+                .foregroundColor(.white)
+                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.25)
+                .cornerRadius(16)
+                .padding(.horizontal, 10)
+                .onTapGesture { isEditing = true }
+                .onChange(of: promptText) { newValue in isEditing = !newValue.isEmpty }
+            }
+          }
+          
+          Spacer()
+          
+          Button(action: {
+            hideKeyboard()
+            navigateToGenerating = true
+          }) {
+            HStack {
+              Text("Generate")
+                .font(.system(size: min(geometry.size.width * 0.045, 18), weight: .bold))
+              Image("stars")
+                .font(.system(size: min(geometry.size.width * 0.05, 20)))
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: geometry.size.height * 0.08)
+            .background(GradientStyles.gradient1)
+            .foregroundColor(.white)
+            .clipShape(Capsule())
+            .blur(radius: isGenerateButtonActive ? 0 : 1)
+            .opacity(isGenerateButtonActive ? 1 : 0.5)
+          }
+          .padding(.bottom, geometry.size.height * 0.06)
+          .padding(.horizontal, geometry.size.width * 0.05)
+          .navigationDestination(isPresented: $navigateToGenerating) {
+            if let avatarId = selectedAvatarId, !promptText.isEmpty {
+              GeneratingView(
+                isArtwork: true, gender: "f",
+                uploadedPhotos: [],
+                generationMethod: { userId, completion in
+                  generateInGodMode(userId: userId, avatarId: avatarId, prompt: promptText, completion: completion)
+                }
+              )
+            } else {
+              GeneratingView(
+                isArtwork: true, gender: "f",
+                uploadedPhotos: [],
+                generationMethod: { userId, completion in
+                  generateTextToImage(userId: userId, prompt: promptText, completion: completion)
+                }
+              )
+            }
           }
         }
-        
+        .background(Color.black.edgesIgnoringSafeArea(.all))
+        .onTapGesture { hideKeyboard() }
+        .onAppear { fetchAvatarsIfNeeded() }
+        .alert("No Internet Connection",
+               isPresented: $showAlert,
+               actions: {
+          Button("OK") {}
+        },
+               message: {
+          Text("Please check your internet settings.")
+        })
       }
-      .background(Color.black.edgesIgnoringSafeArea(.all))
-      .onTapGesture { hideKeyboard() }
-      .onAppear { fetchAvatarsIfNeeded() }
-      .alert("No Internet Connection",
-             isPresented: $showAlert,
-             actions: {
-        Button("OK") {}
-      },
-             message: {
-        Text("Please check your internet settings.")
-      })
+      .navigationBarBackButtonHidden()
     }
-    .navigationBarBackButtonHidden()
   }
   
   private func generateTextToImage(userId: String, prompt: String, completion: @escaping (Result<GenerationData, Error>) -> Void) {
@@ -228,61 +248,77 @@ struct AvatarSelectionRow: View {
   let showAvatarSelection: () -> Void
   @Binding var navigateToAiAvatarView: Bool
   @EnvironmentObject var tabManager: TabManager
+  let geometry: GeometryProxy
+  
+  private var avatarSize: CGFloat {
+    geometry.size.width * 0.2
+  }
   
   var body: some View {
     HStack(spacing: 12) {
-      ForEach(avatars.prefix(2), id: \.id) { avatar in
-        AvatarPreview(avatar: avatar)
-          .onTapGesture {
-            selectedAvatarId = avatar.id
-          }
-          .overlay(
-            RoundedRectangle(cornerRadius: 50)
-              .stroke(selectedAvatarId == avatar.id ? ColorTokens.orange : Color.clear, lineWidth: 2)
-          )
-      }
-      
-      if avatars.count < 2 {
+      if avatars.isEmpty {
+        // Show only plus button when no avatars
         Button(action: {
           tabManager.selectedTab = .aiAvatar
         }) {
           ZStack {
             Circle()
-              .fill(Color.gray.opacity(0.3))
-              .frame(width: 100, height: 100)
+              .fill(GradientStyles.gradient3)
+              .frame(width: avatarSize, height: avatarSize)
             Image(systemName: "plus")
-              .font(.system(size: 24))
+              .font(.system(size: min(geometry.size.width * 0.06, 24)))
               .foregroundColor(.white)
+          }
+        }
+      } else {
+        // Show avatars and plus button if needed
+        ForEach(avatars.prefix(2), id: \.id) { avatar in
+          AvatarPreview(avatar: avatar, size: avatarSize)
+            .onTapGesture {
+              selectedAvatarId = avatar.id
+            }
+            .overlay(
+              RoundedRectangle(cornerRadius: 50)
+                .stroke(selectedAvatarId == avatar.id ? ColorTokens.orange : Color.clear, lineWidth: 2)
+            )
+        }
+        
+        if avatars.count < 2 {
+          Button(action: {
+            tabManager.selectedTab = .aiAvatar
+          }) {
+            ZStack {
+              Circle()
+                .fill(GradientStyles.gradient3)
+                .frame(width: avatarSize, height: avatarSize)
+              Image(systemName: "plus")
+                .font(.system(size: min(geometry.size.width * 0.06, 24)))
+                .foregroundColor(.white)
+            }
           }
         }
       }
     }
-    .padding(.horizontal, 16)
   }
 }
 
 struct AvatarPreview: View {
   let avatar: Avatar
+  let size: CGFloat
   
   var body: some View {
-    AsyncImage(url: URL(string: avatar.preview ?? "")) { phase in
-      switch phase {
-      case .empty:
-        ProgressView()
-      case .success(let image):
-        image.resizable()
-          .scaledToFill()
-          .frame(width: 100, height: 100)
-          .clipShape(Circle())
-      case .failure:
-        Circle()
-          .fill(Color.gray.opacity(0.5))
-          .frame(width: 100, height: 100)
-      @unknown default:
-        Circle()
-          .fill(Color.gray.opacity(0.5))
-          .frame(width: 100, height: 100)
-      }
+    if let imageUrl = avatar.preview {
+      CachedAvatarAsyncImage(url: imageUrl)
+        .frame(width: size, height: size)
+    } else {
+      Circle()
+        .fill(Color.gray.opacity(0.5))
+        .frame(width: size, height: size)
+        .overlay(
+          Image(systemName: "photo")
+            .foregroundColor(.white)
+            .font(.system(size: size * 0.4))
+        )
     }
   }
 }
@@ -292,4 +328,45 @@ extension View {
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                     to: nil, from: nil, for: nil)
   }
+}
+
+#Preview("No Avatars") {
+  CreateView(avatars: [])
+    .environmentObject(TabManager())
+    .environmentObject(NetworkMonitor())
+}
+
+#Preview("One Avatar") {
+  CreateView(avatars: [
+    Avatar(
+      id: 1,
+      title: "Avatar 1",
+      preview: "https://a2817cd1-d6a4-4a42-b52a-6fc6ffd26302.selcdn.net/preview/kSEgACgyZb8N0ZeigA0engdWfaD5eVQA5KhXLhF1.png",
+      gender: "f",
+      isActive: true
+    )
+  ])
+    .environmentObject(TabManager())
+    .environmentObject(NetworkMonitor())
+}
+
+#Preview("Two Avatars") {
+  CreateView(avatars: [
+    Avatar(
+      id: 1,
+      title: "Avatar 1",
+      preview: "https://a2817cd1-d6a4-4a42-b52a-6fc6ffd26302.selcdn.net/preview/kSEgACgyZb8N0ZeigA0engdWfaD5eVQA5KhXLhF1.png",
+      gender: "f",
+      isActive: true
+    ),
+    Avatar(
+      id: 2,
+      title: "Avatar 2",
+      preview: "https://a2817cd1-d6a4-4a42-b52a-6fc6ffd26302.selcdn.net/preview/kSEgACgyZb8N0ZeigA0engdWfaD5eVQA5KhXLhF1.png",
+      gender: "f",
+      isActive: true
+    )
+  ])
+    .environmentObject(TabManager())
+    .environmentObject(NetworkMonitor())
 }
